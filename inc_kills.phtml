@@ -1,0 +1,137 @@
+<?
+	if ($game['params']['g_gametype']==0)
+	{
+		$players=$game['players'];
+	}else
+	{
+		foreach($game['players'] as $key=>$player)
+		{
+			if ($player['team_idx']==1)
+			{
+				$players_1[$key]=$player;
+			}elseif ($player['team_idx']==2)
+			{
+				$players_2[$key]=$player;
+			}
+		}
+		foreach ($players_2 as $key=>$player)
+			$players[$key]=$player;
+		foreach ($players_1 as $key=>$player)
+			$players[$key]=$player;
+	}
+	echo '<h2><font color=gray>Кто кого убил</font></h2>';
+	echo '<table border=0 cellspacing=1 cellpadding=2 class="all_right">';
+	echo '<tr><td></td>';
+	reset($players);
+	foreach ($players as $key=>$player)
+	{
+		if ($player['team_idx']==1)
+		{
+			echo '<td class="red">'.$player['name'].'</td>';
+		}elseif ($player['team_idx']==2)
+		{
+			echo '<td class="blue">'.$player['name'].'</td>';
+		}else
+		{
+			echo '<td>'.$player['name'].'</td>';
+		}
+	}
+	echo '</tr>';
+	$players2=$players;
+	foreach ($players as $key=>$player)
+	{
+		echo '<tr>';
+		if ($player['team_idx']==1)
+		{
+			echo '<td class="red">'.$player['name'].'</td>';
+		}elseif ($player['team_idx']==2)
+		{
+			echo '<td class="blue">'.$player['name'].'</td>';
+		}else
+		{
+			echo '<td>'.$player['name'].'</td>';
+		}
+		reset($players2);
+		foreach ($players2 as $key2=>$player2)
+		{
+			$count=count($player['who_to_who'][$key2]);
+			if ($count==0)
+			{
+				echo '<td class="gray" '.($key==$key2?'style="background-color:#F0F0F0;"':'').'><b>0</b></td>';
+			}else
+			{
+				echo '<td '.($key==$key2?'style="background-color:#F0F0F0;"':'').'><b style="display:block;width:100%;position:relative;" title="'.implode('<br>',$player['who_to_who'][$key2]).'">'.$count.'</b></td>';
+			}
+		}
+		echo '</tr>';
+	}
+	echo '</table>';
+	reset($players);
+	echo '<h2><font color=gray>Статистика по оружию</font></h2>';
+	echo '<table border=0 cellspacing=1 cellpadding=2 class="all_right">';
+	echo '<tr><td></td><td>Пила</td><td>Пулемет</td><td>Ружье</td><td>Грена</td><td>Плазма</td><td>Ракета</td><td>Рельса</td><td>Лайтинг</td>';
+	echo '</tr>';
+	function get_max_skill($mod_weapon)
+	{
+		global $players;
+		$max=0;
+		foreach ($players as $player)
+		{
+			$percent=$player['weapon'][$mod_weapon]['shots']>0?($player['weapon'][$mod_weapon]['hits']/$player['weapon'][$mod_weapon]['shots'])*100:0;
+			if ($percent>$max)
+			{
+				$max=$percent;
+			}
+		}
+		return number_format($max,1,'.','');
+	}
+	foreach ($players as $key=>$player)
+	{
+		if ($player['team_idx']==1)
+		{
+			$class='red';
+		}elseif ($player['team_idx']==2)
+		{
+			$class='blue';
+		}else
+		{
+			$class='';
+		}
+		echo '<tr><td class="'.$class.'">'.$player['name'].'</td>';
+		#Выводим пилу
+		if ($player['weapon']['MOD_GAUNTLET']['hits']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_GAUNTLET']['kills'].'<br />'.$player['weapon']['MOD_GAUNTLET']['hits'].'</td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_MACHINEGUN']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_MACHINEGUN']['kills'].' [<span '.(get_max_skill('MOD_MACHINEGUN')>0&&get_max_skill('MOD_MACHINEGUN')==number_format((($player['weapon']['MOD_MACHINEGUN']['hits']/$player['weapon']['MOD_MACHINEGUN']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_MACHINEGUN']['hits']/$player['weapon']['MOD_MACHINEGUN']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_MACHINEGUN']['hits'].'/'.$player['weapon']['MOD_MACHINEGUN']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_SHOTGUN']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_SHOTGUN']['kills'].' [<span '.(get_max_skill('MOD_SHOTGUN')>0&&get_max_skill('MOD_SHOTGUN')==number_format((($player['weapon']['MOD_SHOTGUN']['hits']/$player['weapon']['MOD_SHOTGUN']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_SHOTGUN']['hits']/$player['weapon']['MOD_SHOTGUN']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_SHOTGUN']['hits'].'/'.$player['weapon']['MOD_SHOTGUN']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_GRENADE']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_GRENADE']['kills'].' [<span '.(get_max_skill('MOD_GRENADE')>0&&get_max_skill('MOD_GRENADE')==number_format((($player['weapon']['MOD_GRENADE']['hits']/$player['weapon']['MOD_GRENADE']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_GRENADE']['hits']/$player['weapon']['MOD_GRENADE']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_GRENADE']['hits'].'/'.$player['weapon']['MOD_GRENADE']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_PLASMA']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_PLASMA']['kills'].' [<span '.(get_max_skill('MOD_PLASMA')>0&&get_max_skill('MOD_PLASMA')==number_format((($player['weapon']['MOD_PLASMA']['hits']/$player['weapon']['MOD_PLASMA']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_PLASMA']['hits']/$player['weapon']['MOD_PLASMA']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_PLASMA']['hits'].'/'.$player['weapon']['MOD_PLASMA']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_ROCKET']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_ROCKET']['kills'].' [<span '.(get_max_skill('MOD_ROCKET')>0&&get_max_skill('MOD_ROCKET')==number_format((($player['weapon']['MOD_ROCKET']['hits']/$player['weapon']['MOD_ROCKET']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_ROCKET']['hits']/$player['weapon']['MOD_ROCKET']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_ROCKET']['hits'].'/'.$player['weapon']['MOD_ROCKET']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_RAILGUN']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_RAILGUN']['kills'].' [<span '.(get_max_skill('MOD_RAILGUN')>0&&get_max_skill('MOD_RAILGUN')==number_format((($player['weapon']['MOD_RAILGUN']['hits']/$player['weapon']['MOD_RAILGUN']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_RAILGUN']['hits']/$player['weapon']['MOD_RAILGUN']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_RAILGUN']['hits'].'/'.$player['weapon']['MOD_RAILGUN']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		if ($player['weapon']['MOD_LIGHTNING']['shots']>0)
+			echo '<td>'.(integer)$player['weapon']['MOD_LIGHTNING']['kills'].' [<span '.(get_max_skill('MOD_LIGHTNING')>0&&get_max_skill('MOD_LIGHTNING')==number_format((($player['weapon']['MOD_LIGHTNING']['hits']/$player['weapon']['MOD_LIGHTNING']['shots'])*100),1,'.','')?'style="color:red"':'').'><b>'.number_format((($player['weapon']['MOD_LIGHTNING']['hits']/$player['weapon']['MOD_LIGHTNING']['shots'])*100),1,'.','').'%</b></span>]<br /><span class="gray">'.$player['weapon']['MOD_LIGHTNING']['hits'].'/'.$player['weapon']['MOD_LIGHTNING']['shots'].'</span></td>';
+			else
+			echo '<td>&mdash;</td>';
+		echo '</tr>';
+	}
+	echo '</table>';
+?>

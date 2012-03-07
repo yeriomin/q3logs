@@ -1,0 +1,326 @@
+body
+{
+	font-size: 13px;
+	font-family: Arial;
+}
+table {font-size:13px}
+A.a_folder_selected,A:visited.a_folder_selected {color:red;}
+A:hover.a_folder_selected {text-decoration: underline}
+A.a_folder_parent,A:visited.a_folder_parent {color:gray;}
+A:hover.a_folder_parent {text-decoration: underline}
+A.a_normal,A:visited.a_normal {color:navy;font-weight:normal;}
+A:hover.a_normal {text-decoration: underline}
+A.a_del,A:visited.a_del {color:red;}
+A:hover.a_del {color:red;text-decoration: underline}
+A,A:visited {color:navy; text-decoration: none;}
+A:hover {text-decoration: underline}
+A.a_copy,A:visited.a_copy {color:white;}
+A:hover.a_del {color:white;text-decoration: underline}
+.maintable td {padding:0px;margin:0}
+
+.datatable {background-color:black}
+.datatable th {text-align:left;background-color:#507090;color:white}
+.datatable td {background-color:#E0E0E0;vertical-align:top;padding:4;}
+
+.parent th {background-color:#C1E1AF}
+.title {color:white; margin: 0 0 0 10; font-size:12px}
+.title2 {color:white; margin: 0 10 0 0; font-size:12px}
+
+.inp0 {width:60px}
+.inp1 {width:200px}
+.inp1_5 {width:300px}
+.inp2 {width:400px}
+
+h4.title a,h4.title a:visited {color:white; text-decoration: underline}
+h4.title a:hover {color:white; text-decoration: none}
+h1.inner_title {color:white;margin-bottom:2;margin-left:6;}
+h1.inner_title a,h1.inner_title a:visited {color:white; text-decoration: underline}
+h1.inner_title a:hover {color:white; text-decoration: none}
+
+table.simple {font-size:12px; font-family:Verdana; background-color:black}
+table.simple td {padding: 1px 4px 1px 4px; background-color:#F7F7F7;height:18px}
+table.simple thead th {background-color: #507090; color: white; font-weight: bold;text-align:left}
+
+table.simple tr.sel1 td { background-color: #C8F7C8; }
+table.simple tr.sel1 td a { color: red; }
+table.simple tr.sel2 td a { color: red; }
+table.simple tr.red td {background-color:#FF9999}
+table.simple tr.red_light td {background-color:#FCDCDC}
+table.simple tr.summary td {background-color:#BBFFBB;}
+
+table.simple tr.black td {background-color: #808080; color: white;}
+table.simple tr.black td font {color: white;}
+
+/*table.simple2 {font-size:12px; font-family:Verdana;  border: 0; border-collapse:collapse;}
+table.simple2 td {padding: 1px 4px 1px 4px; background-color:#F7F7F7;height:18px; border: 1px solid black;}*/
+table.simple2 {font-size:12px; font-family:Verdana;  border: 0; border-collapse:collapse;}
+table.simple2 td {padding: 1px 4px 1px 4px; background-color:#F7F7F7;height:18px; border: 1px solid black;}
+table.simple2 thead td {background-color: #507090; color: white; font-weight: bold; border: 1px solid black !important;}
+
+table.simple2 tr.sel1 td { background-color: #C8F7C8; }
+table.simple2 tr.sel1 td a { color: red; }
+table.simple2 tr.sel2 td a { color: red; }
+table.simple2 tr.red td {background-color:#FF9999}
+table.simple2 tr.red_light td {background-color:#FCDCDC}
+table.simple2 tr.summary td {background-color:#BBFFBB;}
+
+table.simple2 tr.black td {background-color: #808080; color: white;}
+table.simple2 tr.black td font {color: white;}
+
+
+a.red,a.red:visited {color: #000080; text-decoration: underline}
+a.red:hover {color: red; text-decoration: underline}
+
+a.ared,a.ared:visited {color: red; text-decoration: underline}
+a.ared:hover {color: red; text-decoration: underline}
+
+table.inner_table2 {margin-bottom: 6px;}
+table.inner_table2 td {padding: 6px 8px 6px 0px; border-bottom: 1 solid #B0B0B0;}
+table.inner_table2 tr.noborder td {border-bottom: 0px;}
+
+div.opt {background-color: #F0F0F0; padding: 8px 8px 8px 8px; border: 1px solid gray;width:100%;}
+div.opt_red {background-color: #FBC8C8; padding: 8px 8px 8px 8px; border: 1px solid #D71010}
+div.opt_blue {background-color: #E2E2F7; padding: 8px 8px 8px 8px; border: 1px solid #4040B5}
+div.opt_green {background-color: #c8fbc8; padding: 8px 8px 8px 8px; border: 1px solid #10d710}
+
+div.preview {position: absolute; left: 20px; top: 20px}
+
+input.disabled {
+	background-color: #F0F0F0;
+}
+
+div.menu div {
+	padding: 4px 4px 4px 4px;
+	color: black;
+	font-weight: bold;
+}
+
+div.menu div.active {
+	background-color: #c8fbc8;
+	padding: 3px 3px 3px 3px;
+	border: 1px solid #10d710;
+}
+
+div.ins_list {
+	padding-left: 12px;
+	background-image: url("/private/catalogue/images/line_green.gif");
+	background-repeat: repeat-y;
+}
+div.ins_list_clear {
+	padding-left: 12px;
+}
+
+form {
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+
+button.save {
+	width: 120px;
+	height: 28px;
+}
+
+button.add {
+	width: 120px;
+	height: 28px;
+}
+
+div.page_panel {
+	width: 100%;
+	border-left: 1px solid #808080;
+}
+
+div.page_active {
+	float: left;
+	border-top: 1px solid #808080;
+	border-right: 1px solid #808080;
+	border-bottom: 1px solid #F0F0F0;
+	padding: 2px 6px 2px 6px;
+	background-color: #F0F0F0;
+	font-weight: bold;
+	color: red;
+}
+
+div.page_passive {
+	float: left;
+	border-top: 1px solid #808080;
+	border-right: 1px solid #808080;
+	border-bottom: 1px solid #808080;
+	padding: 2px 6px 2px 6px;
+	background-color: #FFFFFF;
+	font-weight: bold;
+}
+
+button.long {
+	font-size: 12px;
+	width: 160px;
+	height: 38px;
+}
+
+button.long_small
+{
+	font-size: 12px;
+	width:32;
+	height:32;
+	font-weight: bold;
+}
+
+ol.services {
+	margin-left: 24px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+optgroup.level_1 {
+	color:white;
+	background-color: black;
+	text-decoration: none;
+	font-style: normal!important;
+}
+optgroup.level_1 option {
+	color:black;
+	background-color: white;
+	font-style: italic;
+}
+optgroup.level_2 {
+	color:white;
+	background-color: gray;
+	text-decoration: none;
+	font-style: none!important;
+}
+optgroup.level_2 option {
+	color:black;
+	background-color: white;
+	font-style: italic;
+}
+span.red {color: red}
+table.edit_table td {
+	height: 26px;
+}
+button.filter {
+	height: 28px;
+	width: 140px;
+	text-align:left;
+}
+
+button.filter_apply {
+	cursor: default;
+	font-size:10px;
+	width:150px;
+	height:28px;
+}
+button.filter_apply div {
+	height:16px;
+	padding:1px 0px 0px 24px;
+	background-image: url('/private/images/filter.gif');
+	background-repeat: no-repeat;
+	background-position: 4px center;
+	text-align: left;
+}
+button.filter_clear {
+	cursor: default;
+	font-size:10px;
+	width:150px;
+	height:28px;
+}
+button.filter_clear div {
+	height:16px;
+	padding:1px 0px 0px 24px;
+	background-image: url('/private/images/filter_delete.gif');
+	background-repeat: no-repeat;
+	background-position: 4px center;
+	text-align: left;
+}
+LEGEND {
+	color: black;
+	font-weight: bold;
+	font-size: 13px;
+	font-family: Arial;
+}
+
+input.valid_warning {
+	background-image: url("/private/images/icons/warning.gif");
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-color: FormFace;
+	border: 0px solid buttonlightborder;
+	height: 22px;
+}
+
+#tooltip {
+/* background: #FCF5E1; */
+	background: #FFFEF2;
+	border: 1px solid #000000;
+	font: 11px Tahoma, Helvetica,sans-serif;
+	margin: 0px;
+	padding: 4px 10px;
+	position: absolute;
+	visibility: hidden;
+	color: black;
+	}
+.bold { font-weight: bold; }
+label.current { font-weight: bold; }
+
+div.folder_title {
+	font-size: 24px;
+	background-color: #507090;
+	padding: 4px 4px 4px 8px;
+	border: 1px solid #404040;
+	color: #E0E0E0;
+}
+div.folder_title a,div.folder_title a:visited {
+	color: white;
+	text-decoration: none;
+	border-bottom: 1px solid white;
+}
+div.folder_title a:hover {
+	color: white;
+	text-decoration: none;
+	border-bottom: 0;
+}
+/* Табулированное меню */
+.tab_menu {
+	border: 0;
+}
+.tab_menu td {
+	padding: 0;
+	font-weight: bold;
+}
+.tab_menu td.transp {
+	border-bottom: 1px solid #808080;
+}
+.tab_menu td.current {
+	padding: 8px 16px 8px 16px;
+	border-left: 1px solid #808080;
+	border-right: 1px solid #808080;
+	border-top: 1px solid #808080;
+	background-color: #F0F0F0;
+}
+.tab_menu td.link {
+	padding: 9px 17px 8px 17px;
+	border-bottom: 1px solid #808080;
+}
+select.style1 optgroup {
+	background-color: black;
+	color: white;
+}
+select.style1 optgroup option {
+	color: black;
+	background-color: white;
+}
+.calc_img
+{
+	margin-top:-2px;
+	//margin-top:0;
+	margin-left:-3px;
+	//margin-left:-2px;
+}
+.tbl_disabled {
+	color: gray;
+}
+.tbl_disabled td {
+	color: gray;
+}
+.img_selected {
+	width: 100px;
+}

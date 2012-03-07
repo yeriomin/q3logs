@@ -1,0 +1,422 @@
+<?
+	#Статистика для TDM
+	if (($game['params']['g_gametype']==3)||($game['params']['g_gametype']==4))
+	{
+		echo '<h2><font color=red>Красная команда</font></h2>';
+		summary_players($game['teams_href']['RED']['idx']);
+		echo '<h2><font color=navy>Синяя команда</font></h2>';
+		summary_players($game['teams_href']['BLUE']['idx']);
+		#Вывод графиков
+		$mins=(integer)($game['time_duration']/60);
+		$y_max=max(array_merge(array_values($diagrams['kill_history'][1]),array_values($diagrams['kill_history'][2])));
+		if ($game_terminated)
+		{
+			echo '<h2>Поминутная динамика убийств</h2><div id="placeholder" style="width:'.($mins*45).'px;height:'.((ceil($y_max/2)+1)*16).'px"></div>';
+			#Участие игроков
+			//echo '<h2>Долевое участие игроков по килам</h2>';
+			//echo '<div id="g_2" style="width:200px;height:200px"></div>';
+			#echo '<h2>Долевое участие игроков по дамаге</h2>';
+			for ($i=0;$i<10;$i++)
+				echo '<br />';
+			echo '
+<script id="source" language="javascript" type="text/javascript">
+$(function () {
+   	var d_red = [';
+$tmp=array();
+for ($i=0;$i<$mins;$i++)
+	$tmp[]='['.(($i+0.5)*60*60*1000).','.(integer)$diagrams['kill_history'][1][$i].']';
+echo implode(',',$tmp);
+echo '];
+   	var d_blue = [';
+$tmp=array();
+for ($i=0;$i<$mins;$i++)
+	$tmp[]='['.(($i+0.5)*60*60*1000).','.(integer)$diagrams['kill_history'][2][$i].']';
+echo implode(',',$tmp);
+echo '];
+	var d_history=[];
+   	d_history[1] = [';
+$tmp=array();
+for ($i=0;$i<$mins;$i++)
+	$tmp[]='"'.implode("<br />",$diagrams['kill_history_2'][1][$i]).'"';
+echo implode(',',$tmp);
+echo '];
+   	d_history[2] = [';
+$tmp=array();
+for ($i=0;$i<$mins;$i++)
+	$tmp[]='"'.implode("<br />",$diagrams['kill_history_2'][2][$i]).'"';
+echo implode(',',$tmp);
+echo '];
+    var plot = $.plot($("#placeholder"),
+	[
+	 	{
+			data:d_red,
+			points: {show:true},
+			lines: { show: true },
+			color: "red",
+			team_idx: "1"
+		},
+	 	{
+			data:d_blue,
+			points: {show:true},
+			lines: { show: true },
+			color: "navy",
+			team_idx: "2"
+		}
+	],
+	{
+		xaxis:
+		{
+			mode: "time",
+			min:0,
+			max: '.($mins*60*60*1000).',
+			ticks: [';
+$tmp=array();
+for ($i=0;$i<=$mins;$i++)
+	$tmp[]=$i*60*60*1000;
+echo implode(',',$tmp);
+echo ']
+		},
+		yaxis:
+		{
+			min:0,
+			max: '.((ceil($y_max/2)*2)+2).',
+			ticks: [';
+$tmp=array();
+for ($i=0;$i<=(ceil($y_max/2)+1);$i++)
+	$tmp[]=$i*2;
+echo implode(',',$tmp);
+echo ']},
+		grid: { hoverable: true }
+		
+	}
+	);
+
+   function showTooltip(x, y, contents) {
+	   $("#body").append("<div id=\'tooltip_g\'>" + contents + "</div>");
+	   $("#tooltip_g").css( {
+            position: "absolute",
+            display: "block",
+            top: y + 5,
+            left: x + 5,
+			font: "11px Tahoma, Helvetica,sans-serif",
+            border: "1px solid #000000",
+            padding: "4px 10px",
+            "background-color": "#FFFEF2"
+        }).fadeIn(200);
+	}
+
+    var previousPoint = null;
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        $("#x").text(pos.x.toFixed(2));
+        $("#y").text(pos.y.toFixed(2));
+
+		if (item) {
+			if (previousPoint != item.datapoint) {
+				previousPoint = item.datapoint;
+				
+				$("#tooltip_g").remove();
+				var x = item.datapoint[0].toFixed(2),
+					y = item.datapoint[1].toFixed(2);
+				
+				showTooltip(item.pageX, item.pageY,
+							d_history[item.series.team_idx][(x/1000/60/60-0.5)]);
+			}
+		}
+		else {
+			$("#tooltip_g").remove();
+			previousPoint = null;            
+		}
+    });
+
+
+    $.plot($("#g_2"),
+	[
+	 	{
+			data:[[0,7]],
+			points: {show:false},
+			lines: { show: true },
+			bars: {show: true,align:"center"},
+			/*color: "red",*/
+			label: "Defender"
+		},
+	 	{
+			data:[[1,32]],
+			points: {show:false},
+			lines: { show: true },
+			bars: {show: true,align:"center"},
+			/*color: "navy",*/
+			label: "Uragannij konyaka"
+		}
+
+	],
+	{
+		xaxis:
+		{
+			min:-0.5,
+			max: 7.5,
+			ticks: []
+		},
+		yaxis:
+		{
+			min:0,
+			max: 100
+		},
+		legend: {
+			show:true,
+			margin:0
+		},
+		grid: {
+			markings: [
+				{
+					xaxis: {from: 3, to: 5},
+					yaxis: {from: 30, to: 60},
+					color: "#FF0000"
+				}
+			]
+		}
+	}
+	);
+
+
+});
+</script>
+';
+		}
+	}else
+	{
+		echo '<h2><font color=gray>Соперники</font></h2>';
+		summary_players(0);
+	}
+	if (count($disconnects)>0)
+	{
+		echo '<h2><font color=gray>Вышли до окончания игры</font></h2>';
+		echo '<table border=0 cellspacing=1 cellpadding=2><thead><td><b>Время</b></td><td><b>Игрок</b></td></thead>';
+		foreach ($disconnects as $value)
+		{
+			if ($value['team_idx']==1)
+			{
+				$class="red";
+			}elseif ($value['team_idx']==2)
+			{
+				$class="blue";
+			}else
+			{
+				$class="";
+			}
+			echo '<tr><td>'.$value['time'].'</td><td class="'.$class.'">'.$value['who'].'</td></tr>';
+		}
+		echo '</table>';
+	}
+	function summary_players($team_idx)
+	{
+		global $game;
+		#Вывод финальной статистики по игрокам с учетом выбранной команды (для Deathmatch - 0)
+//		if ($game['params']['g_gametype']==3)
+		{
+			echo '<table border=0 cellspacing=1 cellpadding=2>';
+			echo '<thead>
+				<td><b>№</b></td>
+				<td width=150><b>Игрок</b></td>
+				<td width=30 align=right><b><span title="Убийств">Kills</span></b></td>
+				<td><b><span title="Смертей">Death</span></b></td>
+				<td><b><span title="Самоубийств">Suicides</span></b></td>';
+			if ($game['params']['g_gametype']!=0)
+			{
+				echo $game['params']['g_gametype']!=0?'<td align=right><b><span title="Своих убито">Team<br />kills</span></b></td>':'';
+			}
+			if ($game['params']['g_gametype']==3)
+			{
+				echo $game['params']['g_gametype']!=0?'<td width=36><b><span title="Эффективность в команде">NET</span></b></td>':'';
+			}
+			echo '
+				<td width=70 align=right><b><span title="Урона нанесено">Damage<br />given</span></b></td>
+				<td width=50 align=right><b><span title="Урона нанесено каждому убитому">D/K</span></b></td>
+				<td width=70 align=right><b><span title="Урона получено">Damage<br />received</span></b></td>';
+			if ($game['params']['g_gametype']!=0)
+			{
+				echo '<td width=60 align=right><b><span title="Урона нанесено своим">Team<br />damage</span></b></td>';
+			}
+			echo '<td width=70 align=right><b><span title="Эффективность стрельбы по формуле:<br>Damage Given/(Damage received+Team damage)">Skill</span></b></td>';
+			if ($game['params']['g_gametype']==4)
+			{
+				echo '
+				<td width=70 align=right><b><span title="Защита флага, флагоносца и своей базы">Team<br />defence</span></b></td>
+				';
+			}
+			echo '<td align=right><b><span title="Суммарные очки">Score</span></b></td>';
+			if ($game['params']['g_gametype']!=4)
+			{
+				echo '<td width=20 align=right><img src="/images/iconh_mega.gif" width=16 height=16 alt="Mega Health"></td>';
+			}
+				echo '
+				<td width=20 align=right><img src="/images/iconr_red.gif" width=16 height=16 alt="Red armor"></td>
+				<td width=20 align=right><img src="/images/iconr_yellow.gif" width=16 height=16 alt="Yellow armor"></td>
+				<td width=20 align=right><img src="/images/regen.gif" width=16 height=16 alt="Regeneration"></td>
+				<td width=20 align=right><img src="/images/invis.gif" width=16 height=16 alt="Invisibility"></td>
+';
+			if ($game['params']['g_gametype']!=4)
+			{
+				echo '
+				<td width=20 align=right><img src="/images/teleporter.gif" width=16 height=16 alt="Teleporter"></td>
+				';
+			}
+				echo '
+				<td width=20 align=center style="font-family: Times"><img src="/images/armor.gif" width=24 height=16 alt="Отожрано брони"><br />&#931;</td>
+				<td width=20 align=center style="font-family: Times"><img src="/images/health.gif" width=16 height=16 alt="Нахапано аптечек"><br />&#931;</td>
+				<td width=20 align=right><img src="/images/quad.gif" width=16 height=16 alt="Quad damage"></td>
+				';
+			echo '</thead>';
+			$q=0;
+			foreach($game['players'] as $key=>$player)
+			{
+				$game['players'][$key]['net']=$player['kill']-$player['death']-$player['sui']-$player['tk'];
+				/*$game['players'][$key]['score']=$player['kill']-$player['sui']-$player['tk'];*/
+			}
+			#Формируем список игроков на основе сортировки
+			foreach($game['players'] as $key=>$player)
+			{
+				if ($player['team_idx']==$team_idx)
+				{
+					$players[$player['score']]=$player;
+				}
+			}
+			uasort($game['players'],'summary_sort');
+			foreach($game['players'] as $key=>$player)
+			{
+				if ($player['team_idx']==$team_idx)
+				{
+					$q++;
+					echo '<tr>
+						<td>'.$q.'</td>
+						<td>'.$player['name'].'</td>
+						<td align=right>'.($player['kill']>0?'<b>'.$player['kill'].'</b>':'<font color=gray>0</font>').'</td>
+						<td align=right>'.($player['death']>0?'<b>'.$player['death'].'</b>':'<font color=gray>0</font>').'</td>
+						<td align=right>'.($player['sui']>0?'<b>'.$player['sui'].'</b>':'<font color=gray>0</font>').'</td>';
+					if ($game['params']['g_gametype']!=0)
+					{
+						echo '<td align=right>'.($player['tk']>0?'<b>'.$player['tk'].'</b>':'<font color=gray>0</font>').'</td>';
+					}
+					if ($game['params']['g_gametype']==3)
+					{
+						echo '<td align=right><b>'.$player['net'].'</b></td>';
+					}
+					echo '
+						<td align=right><b>'.number_format($player['Given'],0,'',' ').'</b></td>
+						<td align=right><b>'.number_format($player['kill']>0?$player['Given']/$player['kill']:0,0,'',' ').'</b></td>
+						<td align=right><b>'.number_format($player['Recvd'],0,'',' ').'</b></td>';
+					if ($game['params']['g_gametype']!=0)
+					{
+						echo '<td align=right><b>'.number_format($player['TeamDmg'],0,'',' ').'</b></td>';
+					}
+					if (($player['Recvd']==0)&&($player['TeamDmg']==0))
+					{
+						$player['Skill']=0;
+					}else
+					{
+						$player['skill']=$player['Given']/($player['Recvd']+$player['TeamDmg']);
+					}
+					echo '<td align=right><b>'.($player['skill']>0?number_format($player['skill'],2,'.',''):'<font color=gray>0</font>').'</b></td>';
+					if ($game['params']['g_gametype']==4)
+					{
+						echo '<td align=right><b>'.($player['td']>0?$player['td']:'<font color=gray>0</font>').'</b></td>';
+					}
+					echo '<td align=right><b>'.$player['score'].'</b></td>';
+					if ($game['params']['g_gametype']!=4)
+					{
+						echo '<td align=right>'.($player['item_health_mega']>0?'<b>'.$player['item_health_mega'].'</b>':'<font color=gray>0</font>').'</b></td>';
+					}
+						echo '
+						<td align=right>'.($player['item_armor_body']>0?'<b>'.$player['item_armor_body'].'</b>':'<font color=gray>0</font>').'</b></td>
+						<td align=right>'.($player['item_armor_combat']>0?'<b>'.$player['item_armor_combat'].'</b>':'<font color=gray>0</font>').'</b></td>
+						<td align=right>'.($player['item_regen']>0?'<b>'.$player['item_regen'].'</b>':'<font color=gray>0</font>').'</b></td>
+						<td align=right>'.($player['item_invis']>0?'<b>'.$player['item_invis'].'</b>':'<font color=gray>0</font>').'</b></td>
+						';
+					if ($game['params']['g_gametype']!=4)
+					{
+						echo '
+						<td align=right>'.($player['holdable_teleporter']>0?'<b>'.$player['holdable_teleporter'].'</b>':'<font color=gray>0</font>').'</b></td>
+						';
+					}
+					echo '
+						<td align=right><nobr>'.($player['Armor']>0?'<b>'.number_format($player['Armor'],0,'',' ').'</b>':'<font color=gray>0</font>').'</b></nobr></td>
+						<td align=right><nobr>'.($player['Health']>0?'<b>'.number_format($player['Health'],0,'',' ').'</b>':'<font color=gray>0</font>').'</b></nobr></td>
+						<td align=right>'.($player['item_quad']>0?'<b>'.$player['item_quad'].'</b>':'<font color=gray>0</font>').'</b></td>
+					</tr>';
+					$total['kill']+=$player['kill'];
+					$total['death']+=$player['death'];
+					$total['sui']+=$player['sui'];
+					$total['tk']+=$player['tk'];
+					$total['net']+=$player['net'];
+					$total['Given']+=$player['Given'];
+					$total['dk']=0;
+					$total['Recvd']+=$player['Recvd'];
+					$total['TeamDmg']+=$player['TeamDmg'];
+					$total['Armor']+=$player['Armor'];
+					$total['Health']+=$player['Health'];
+					if ($player['skill']>0)
+					{
+						$total['skill']+=$player['skill'];
+						$skill_total++;
+					}
+					$total['td']+=$player['td'];
+					$total['score']+=$player['score'];
+					$total['item_health_mega']+=$player['item_health_mega'];
+					$total['item_armor_body']+=$player['item_armor_body'];
+					$total['item_armor_combat']+=$player['item_armor_combat'];
+					$total['item_regen']+=$player['item_regen'];
+					$total['item_invis']+=$player['item_invis'];
+					$total['item_quad']+=$player['item_quad'];
+					$total['holdable_teleporter']+=$player['holdable_teleporter'];
+				}
+			}
+			echo '<tr class="summary">
+				<td colspan=2><b>Итого</td>
+				<td align=right><b>'.$total['kill'].'</b></td>
+				<td align=right><b>'.$total['death'].'</b></td>
+				<td align=right>'.($total['sui']>0?'<b>'.$total['sui'].'</b>':'<font color=gray>0</font>').'</td>';
+			if ($game['params']['g_gametype']!=0)
+			{
+				echo '<td align=right>'.($total['tk']>0?'<b>'.$total['tk'].'</b>':'<font color=gray>0</font>').'</b></td>';
+			}
+			if ($game['params']['g_gametype']==3)
+			{
+				echo '<td align=right><b>'.$total['net'].'</b></td>';
+			}
+			echo '
+				<td align=right><b>'.number_format($total['Given'],0,'',' ').'</b></td>
+				<td align=right><b>'.number_format($total['dk'],0,'',' ').'</b></td>
+				<td align=right><b>'.number_format($total['Recvd'],0,'',' ').'</b></td>';
+			if ($game['params']['g_gametype']!=0)
+			{
+				echo '<td align=right><b>'.number_format($total['TeamDmg'],0,'',' ').'</b></td>';
+			}
+			echo '<td align=right><b>'.number_format($total['skill']/$skill_total,2,'.','').'</b></td>';
+			if ($game['params']['g_gametype']==4)
+			{
+				echo '<td align=right><b>'.(integer)$total['td'].'</b></td>';
+			}
+			echo '<td align=right><b>'.number_format($total['score'],0,'',' ').'</b></td>';
+			if ($game['params']['g_gametype']!=4)
+			{
+				echo '<td align=right>'.($total['item_health_mega']>0?'<b>'.$total['item_health_mega'].'</b>':'<font color=gray>0</font>').'</b></td>';
+			}
+				echo '
+				<td align=right>'.($total['item_armor_body']>0?'<b>'.$total['item_armor_body'].'</b>':'<font color=gray>0</font>').'</b></td>
+				<td align=right>'.($total['item_armor_combat']>0?'<b>'.$total['item_armor_combat'].'</b>':'<font color=gray>0</font>').'</b></td>
+				<td align=right>'.($total['item_regen']>0?'<b>'.$total['item_regen'].'</b>':'<font color=gray>0</font>').'</b></td>
+				<td align=right>'.($total['item_invis']>0?'<b>'.$total['item_invis'].'</b>':'<font color=gray>0</font>').'</b></td>
+				';
+			if ($game['params']['g_gametype']!=4)
+			{
+				echo '
+				<td align=right>'.($total['holdable_teleporter']>0?'<b>'.$total['holdable_teleporter'].'</b>':'<font color=gray>0</font>').'</b></td>';
+			}
+			echo '
+				<td align=right><nobr>'.($total['Armor']>0?'<b>'.number_format($total['Armor'],0,'',' ').'</b>':'<font color=gray>0</font>').'</b></nobr></td>
+				<td align=right><nobr>'.($total['Health']>0?'<b>'.number_format($total['Health'],0,'',' ').'</b>':'<font color=gray>0</font>').'</b></nobr></td>
+				<td align=right>'.($total['item_quad']>0?'<b>'.$total['item_quad'].'</b>':'<font color=gray>0</font>').'</b></td>
+			</tr>';
+		}
+		echo '</table>';
+	}
+?>

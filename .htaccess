@@ -1,0 +1,2 @@
+DirectoryIndex index.phtml
+AddType application/x-httpd-php phtml php
