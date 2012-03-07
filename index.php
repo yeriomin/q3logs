@@ -28,6 +28,7 @@ define('GAMELIST', '/tmp/q3gamelist.xml');
     <!--[if IE]><script language="javascript" type="text/javascript" src="/js/flot/excanvas.pack.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="/js/flot/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="/js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
 </head>
 <style>
 body {
@@ -627,6 +628,10 @@ $(document).ready(function(){
 		echo '<div id="block_flags" style="display:none">';
 		@include($_SERVER['DOCUMENT_ROOT'].'/inc_ctf.phtml');
 		echo '</div>';
+		echo '<br/>';
+		echo '<script type="text/javascript">VK.init({apiId: 2843150, onlyWidgets: true});</script>';
+		echo '<div id="vk_comments"></div>';
+		echo '<script type="text/javascript">VK.Widgets.Comments("vk_comments", {limit: 10, width: "496", attach: "*"});</script>';
 		fclose($log);
 	}
 	function summary_sort($value0,$value1) #Первичная сортировка - по score, вторичная - по kill, третичная - по death
